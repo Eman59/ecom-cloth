@@ -13,8 +13,9 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 
 const LoginRegister = ({ location }) => {
   const { pathname } = location;
-  const [ dataRegister, setDataRegister ] = useState([])
-  const [ dataLogin, setDataLogin ] = useState([])
+  const [ dataRegister, setDataRegister ] = useState([]);
+  const [ dataLogin, setDataLogin ] = useState([]);
+  const [ loginState, setLoginState ] = useState(false);
   const formRef = useRef()
   const username = useRef();
   const password = useRef();
@@ -64,23 +65,30 @@ const LoginRegister = ({ location }) => {
       const data = await response.get();
       const data2 = await response2.get();
       data.docs.forEach(user => {
-        console.log(user.data())
         setDataLogin(user.data())
       })
       data2.docs.forEach(user => {
-        console.log(user.data())
         setDataRegister(user.data())
       })
     }
     getData();
   }, []);
 
-  const handleClick = () => {
+  const handleClick = (event) => {
+    event.preventDefault();
     if( loginUsername.current.value === dataRegister.Name && loginPassword.current.value === dataRegister.Password ){
-      history.push("/");
+      setLoginState(true)
+      loginUsername.current.value = ""
+      loginPassword.current.value = ""
     }else if( loginUsername.current.value.length > 5 && loginPassword.current.value > 3 ){
       alert("Wrong Credentials")
     }
+  }
+
+  console.log("imran", loginState)
+
+  if(loginState){
+    history.push("/")
   }
 
   return (
